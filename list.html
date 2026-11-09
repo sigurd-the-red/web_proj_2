@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Campaign hall{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="page-heading d-flex flex-wrap justify-content-between align-items-end gap-3"><div><div class="eyebrow">Gather your circle</div><h1 class="mb-0">Campaign hall</h1></div><a class="btn btn-gold" href="{{ url_for('main.new_campaign') }}">+ Create campaign</a></div>
+  <div class="row g-3 mb-5">
+    {% for campaign in campaigns %}
+      <div class="col-md-6 col-xl-4"><div class="campaign-card"><div class="eyebrow">{{ campaign.setting_location }}</div><h3>{{ campaign.name }}</h3><p class="muted">{{ campaign.description|truncate(150) or 'No campaign premise has been recorded.' }}</p><div class="small muted mb-3">{{ campaign.memberships|length }} participant(s) · {{ campaign.sessions|length }} session(s)</div><a class="btn btn-outline-gold btn-sm" href="{{ url_for('main.campaign_detail', campaign_id=campaign.id) }}">Enter campaign</a></div></div>
+    {% else %}<div class="col-12"><div class="empty-state"><h3>No active chronicles.</h3><p>Create a campaign as Storyteller or join one using an invitation code.</p></div></div>{% endfor %}
+  </div>
+  <div class="content-card" style="max-width:720px"><div class="eyebrow">Already have an invitation?</div><h3>Join a campaign</h3><form method="post" action="{{ url_for('main.join_campaign') }}" class="row g-3 align-items-end">{{ join_form.hidden_tag() }}<div class="col-md-5">{{ join_form.invite_code.label(class="form-label") }}{{ join_form.invite_code(class="form-control", placeholder="8-character code") }}</div><div class="col-md-5">{{ join_form.character_id.label(class="form-label") }}{{ join_form.character_id(class="form-select") }}</div><div class="col-md-2">{{ join_form.submit(class="btn btn-gold w-100") }}</div></form>
+  <div class="form-text mt-2">You can join now and attach a character later by asking the Storyteller to update the roster.</div></div>
+</div>
+{% endblock %}

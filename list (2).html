@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}My characters{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="page-heading d-flex flex-wrap align-items-end justify-content-between gap-3">
+    <div><div class="eyebrow">Your champions</div><h1 class="mb-0">Character vault</h1></div>
+    <a class="btn btn-gold" href="{{ url_for('main.new_character') }}">+ Create Solar</a>
+  </div>
+  {% if characters %}
+    <div class="row g-3">
+      {% for character in characters %}
+        <div class="col-md-6 col-xl-4"><div class="character-card">
+          <div class="eyebrow">{{ character.caste }} Caste</div>
+          <h3>{{ character.name }}</h3>
+          <p class="muted">{{ character.concept or 'A legend yet unwritten.' }}</p>
+          <div class="small muted mb-3">Player: {{ character.player_name }} · Essence {{ character.sheet.core.essence if character.sheet.core else 2 }}</div>
+          <a class="btn btn-outline-gold btn-sm" href="{{ url_for('main.character_detail', character_id=character.id) }}">Open sheet</a>
+          <a class="btn btn-outline-gold btn-sm" href="{{ url_for('main.edit_character', character_id=character.id) }}">Edit</a>
+        </div></div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state"><h3>Your legend has not begun.</h3><p>Create a Solar character to keep its traits and abilities on record.</p><a class="btn btn-gold" href="{{ url_for('main.new_character') }}">Create your first character</a></div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit campaign' if campaign else 'Create campaign' }}{% endblock %}
+{% block content %}
+<div class="container py-5" style="max-width: 780px">
+  <div class="page-heading"><div class="eyebrow">Storyteller's desk</div><h1>{{ 'Edit campaign' if campaign else 'Create a chronicle' }}</h1><p class="muted mb-0">Set the stage for your circle of Exalted.</p></div>
+  <div class="panel"><form method="post">{{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.name.label(class="form-label") }}{{ form.name(class="form-control") }}{% for e in form.name.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+    <div class="mb-3">{{ form.setting_location.label(class="form-label") }}{{ form.setting_location(class="form-control") }}{% for e in form.setting_location.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+    <div class="mb-3">{{ form.description.label(class="form-label") }}{{ form.description(class="form-control", rows=6, placeholder='What conflict, mystery, or ambition brings the circle together?') }}</div>
+    <div class="d-flex gap-2 justify-content-end"><a href="{{ url_for('main.campaigns') }}" class="btn btn-outline-gold">Cancel</a>{{ form.submit(class="btn btn-gold") }}</div>
+  </form></div>
+</div>
+{% endblock %}

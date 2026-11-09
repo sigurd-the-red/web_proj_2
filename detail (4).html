@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ session_record.title }}{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="page-heading d-flex flex-wrap justify-content-between align-items-end gap-3"><div><div class="eyebrow"><a href="{{ url_for('main.campaign_detail', campaign_id=campaign.id) }}">{{ campaign.name }}</a> · {{ session_record.status|title }}</div><h1 class="mb-1">{{ session_record.title }}</h1><p class="muted mb-0">{% if session_record.scheduled_at %}{{ session_record.scheduled_at.strftime('%A, %B %d, %Y at %H:%M') }}{% else %}Date not scheduled{% endif %}</p></div>
+    {% if membership.is_storyteller %}<form method="post" action="{{ url_for('main.toggle_session_status', session_id=session_record.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-outline-gold">Mark as {{ 'completed' if session_record.status == 'planned' else 'planned' }}</button></form>{% endif %}
+  </div>
+  <div class="row g-3">
+    <div class="col-lg-7"><div class="content-card mb-3"><h3>Session brief</h3><p>{{ session_record.summary or 'No recap or preparation notes yet.' }}</p></div>
+      <div class="content-card"><h3>Session notes</h3>{% for note in notes %}<div class="border-bottom py-3" style="border-color:rgba(197,160,89,.2)!important"><div class="d-flex justify-content-between gap-2"><strong>{{ note.author.username if note.author else 'Former member' }}</strong><span class="small muted">{{ note.created_at.strftime('%b %d, %Y %H:%M') }} · {{ 'Storyteller only' if note.visibility == 'gm' else 'Party' }}</span></div><p class="mb-0 mt-2">{{ note.content }}</p></div>{% else %}<p class="muted">No notes are visible yet.</p>{% endfor %}
+        <hr><form method="post">{{ note_form.hidden_tag() }}<div class="mb-2">{{ note_form.content.label(class="form-label") }}{{ note_form.content(class="form-control", rows=4, placeholder="Record discoveries, decisions, leads, or dramatic consequences...") }}</div>{% if membership.is_storyteller %}<div class="mb-2">{{ note_form.visibility.label(class="form-label") }}{{ note_form.visibility(class="form-select") }}</div>{% else %}<input type="hidden" name="visibility" value="party">{% endif %}{{ note_form.submit(class="btn btn-gold") }}</form>
+      </div>
+    </div>
+    <div class="col-lg-5"><div class="content-card mb-3"><h3>Session dice roller</h3><form method="post" action="{{ url_for('main.session_roll', session_id=session_record.id) }}">{{ roll_form.hidden_tag() }}<div class="row g-2"><div class="col-6">{{ roll_form.pool.label(class="form-label") }}{{ roll_form.pool(class="form-control") }}</div><div class="col-6">{{ roll_form.difficulty.label(class="form-label") }}{{ roll_form.difficulty(class="form-control") }}</div><div class="col-12">{{ roll_form.roll_type.label(class="form-label") }}{{ roll_form.roll_type(class="form-select") }}</div><div class="col-12">{{ roll_form.submit(class="btn btn-gold w-100") }}</div></div></form></div>
+      <div class="content-card"><h3>Roll history</h3>{% for roll in rolls %}<div class="py-2 border-bottom" style="border-color:rgba(197,160,89,.2)!important"><div class="small muted">{{ roll.user.username if roll.user else 'Unknown' }} · {{ roll.created_at.strftime('%H:%M') }} · {{ roll.pool }}d10 vs difficulty {{ roll.difficulty }}</div><div class="my-1">{% for die in roll.dice %}<span class="dice {% if die == 1 %}one{% elif die >= 7 %}success{% endif %}">{{ die }}</span>{% else %}<span class="muted">No dice rolled</span>{% endfor %}</div><strong>{{ roll.successes }} success(es)</strong>{% if roll.is_botch %}<span class="text-danger"> · Botch</span>{% elif roll.succeeded %}<span class="text-success"> · Success</span>{% else %}<span class="muted"> · Failure</span>{% endif %}</div>{% else %}<p class="muted">No rolls for this session yet.</p>{% endfor %}</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}{{ character.name }}{% endblock %}
+{% block content %}
+{% set sheet = character.sheet or {} %}
+<div class="container py-5">
+  <div class="page-heading d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div><div class="eyebrow">{{ character.caste }} Caste Solar</div><h1 class="mb-1">{{ character.name }}</h1><p class="muted mb-0">{{ character.concept or 'No concept recorded' }} · Player: {{ character.player_name }}</p></div>
+    <div class="d-flex gap-2"><a class="btn btn-outline-gold" href="{{ url_for('main.edit_character', character_id=character.id) }}">Edit sheet</a><a class="btn btn-gold" href="{{ url_for('main.characters') }}">All characters</a></div>
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="content-card"><div class="eyebrow">Nature</div><h4>{{ character.nature or '—' }}</h4><div class="eyebrow mt-3">Anima</div><p>{{ character.anima or '—' }}</p></div></div>
+    <div class="col-md-4"><div class="content-card"><div class="eyebrow">Core traits</div><p>Willpower: <strong>{{ sheet.core.willpower if sheet.core else 5 }}</strong></p><p>Essence: <strong>{{ sheet.core.essence if sheet.core else 2 }}</strong></p><p>Personal motes: {{ sheet.personal_motes or '—' }}</p><p>Peripheral motes: {{ sheet.peripheral_motes or '—' }}</p></div></div>
+    <div class="col-md-4"><div class="content-card"><div class="eyebrow">Virtues</div>{% for name, value in (sheet.virtues or {}).items() %}<div class="stat-row"><span class="text-capitalize">{{ name }}</span><strong>{{ value }}</strong></div>{% endfor %}</div></div>
+  </div>
+  <div class="row g-3">
+    <div class="col-lg-6"><div class="content-card"><h3>Attributes</h3><div class="row">{% for category, names in [('Physical',['strength','dexterity','stamina']),('Social',['charisma','manipulation','appearance']),('Mental',['perception','intelligence','wits'])] %}<div class="col-md-4"><h5>{{ category }}</h5>{% for name in names %}<div class="stat-row"><span class="text-capitalize">{{ name }}</span><strong>{{ sheet.attributes[name] if sheet.attributes else 1 }}</strong></div>{% endfor %}</div>{% endfor %}</div></div></div>
+    <div class="col-lg-6"><div class="content-card"><h3>Abilities</h3><div class="row">{% for group, names in [('Dawn',['archery','brawl','martial-arts','thrown','melee']),('Zenith',['endurance','performance','presence','resistance','survival']),('Twilight',['craft','investigation','lore','medicine','occult']),('Night',['athletics','awareness','dodge','larceny','stealth']),('Eclipse',['bureaucracy','linguistics','ride','sail','socialize'])] %}<div class="col-sm-6 mb-3"><h5>{{ group }}</h5>{% for name in names %}<div class="stat-row"><span>{{ name.replace('-', ' ')|title }}{% if sheet.specialties and sheet.specialties.get(name) %}<small class="muted"> · {{ sheet.specialties.get(name) }}</small>{% endif %}</span><strong>{{ sheet.abilities[name] if sheet.abilities else 0 }}</strong></div>{% endfor %}</div>{% endfor %}</div></div></div>
+  </div>
+  <div class="content-card mt-3"><h3>Backgrounds</h3><p class="mb-0">{{ sheet.backgrounds or 'No backgrounds recorded.' }}</p></div>
+  <form class="mt-3" method="post" action="{{ url_for('main.delete_character', character_id=character.id) }}" onsubmit="return confirm('Delete this character sheet?');"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-danger-soft btn-sm">Delete character</button></form>
+</div>
+{% endblock %}

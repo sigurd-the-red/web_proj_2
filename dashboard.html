@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Chronicle dashboard{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="page-heading"><div class="eyebrow">The sun rises on another age</div><h1>Welcome, {{ current_user.username }}</h1><p class="muted mb-0">Your characters, campaigns, and next sessions gathered in one place.</p></div>
+  <div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="content-card"><div class="eyebrow">Character vault</div><div class="display-5">{{ characters|length }}</div><p class="muted">Recently updated champions</p><a href="{{ url_for('main.characters') }}">Open character vault →</a></div></div>
+    <div class="col-md-4"><div class="content-card"><div class="eyebrow">Campaigns</div><div class="display-5">{{ campaigns|length }}</div><p class="muted">Stories you are part of</p><a href="{{ url_for('main.campaigns') }}">Open campaign hall →</a></div></div>
+    <div class="col-md-4"><div class="content-card"><div class="eyebrow">Upcoming sessions</div><div class="display-5">{{ upcoming_sessions|length }}</div><p class="muted">Planned gatherings</p><a href="{{ url_for('main.campaigns') }}">Review schedules →</a></div></div>
+  </div>
+  <div class="row g-3">
+    <div class="col-lg-6"><div class="content-card"><div class="d-flex justify-content-between align-items-center mb-3"><h3 class="mb-0">Recent characters</h3><a href="{{ url_for('main.new_character') }}">+ New</a></div>
+      {% for character in characters %}<div class="stat-row py-2"><div><strong>{{ character.name }}</strong><div class="small muted">{{ character.caste }} · {{ character.concept }}</div></div><a href="{{ url_for('main.character_detail', character_id=character.id) }}">Open</a></div>{% else %}<p class="muted mb-0">No characters yet. Create your first Solar champion.</p>{% endfor %}
+    </div></div>
+    <div class="col-lg-6"><div class="content-card"><div class="d-flex justify-content-between align-items-center mb-3"><h3 class="mb-0">Your campaigns</h3><a href="{{ url_for('main.new_campaign') }}">+ New campaign</a></div>
+      {% for campaign in campaigns[:5] %}<div class="stat-row py-2"><div><strong>{{ campaign.name }}</strong><div class="small muted">{{ campaign.setting_location }} · {{ campaign.status|title }}</div></div><a href="{{ url_for('main.campaign_detail', campaign_id=campaign.id) }}">Enter</a></div>{% else %}<p class="muted mb-0">No campaigns yet. Start a chronicle or join with an invitation code.</p>{% endfor %}
+    </div></div>
+  </div>
+  {% if upcoming_sessions %}<div class="content-card mt-3"><h3>Upcoming sessions</h3>{% for item in upcoming_sessions %}<div class="stat-row py-2"><div><strong>{{ item.title }}</strong><div class="small muted">{{ item.campaign.name }}</div></div><a href="{{ url_for('main.session_detail', session_id=item.id) }}">Details</a></div>{% endfor %}</div>{% endif %}
+  <div class="mt-4 d-flex flex-wrap gap-2"><a class="btn btn-gold" href="{{ url_for('main.new_character') }}">Create Solar</a><a class="btn btn-outline-gold" href="{{ url_for('main.new_campaign') }}">Create campaign</a></div>
+</div>
+{% endblock %}

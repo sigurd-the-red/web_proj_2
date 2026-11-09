@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit ' ~ character.name if character else 'Create character' }}{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="page-heading"><div class="eyebrow">Solar character builder · Exalted 1E</div><h1>{{ 'Revise character sheet' if character else 'Create a Solar' }}</h1><p class="muted mb-0">Set your concept and Caste, then distribute dots using the original builder's priority budgets.</p></div>
+  <form id="charSheet" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <div id="bio-info" class="row mb-4"></div>
+    {% if form.errors %}<div class="alert alert-warning">Some character details need attention. Review the highlighted fields and dot budgets.</div>{% endif %}
+    <hr>
+    <h3 class="text-center mt-4 mb-3">Attributes</h3>
+    <div class="row mb-4" id="attributes">
+      {% for category, label in [('physical','Physical'),('social','Social'),('mental','Mental')] %}
+        <div class="col-md-4">
+          <h5 class="caste-header text-center">{{ label }}</h5>
+          <div class="mb-2"><select class="form-select form-select-sm priority-select" name="{{ category }}-priority" data-category="{{ category }}"><option value="">Select Priority...</option></select></div>
+          <div class="text-center mb-3 small" style="color:var(--accent-glow)">Points Spent: <span id="{{ category }}-spent">0</span> / <span id="{{ category }}-max">0</span></div>
+          <div id="{{ category }}-attributes"></div>
+        </div>
+      {% endfor %}
+    </div>
+    <hr>
+    <h3 class="text-center mt-4 mb-1">Abilities</h3>
+    <div class="text-center mb-3 small" style="color:var(--accent-glow)">Points Spent: <span id="ability-spent">0</span> / 20</div>
+    <div class="row">
+      <div class="col-md-4 mb-4"><h5 class="caste-header">Dawn (War)</h5><div id="dawn-abilities"></div></div>
+      <div class="col-md-4 mb-4"><h5 class="caste-header">Zenith (Body & Soul)</h5><div id="zenith-abilities"></div></div>
+      <div class="col-md-4 mb-4"><h5 class="caste-header">Twilight (Mind)</h5><div id="twilight-abilities"></div></div>
+      <div class="col-md-4 mb-4"><h5 class="caste-header">Night (Shadow)</h5><div id="night-abilities"></div></div>
+      <div class="col-md-4 mb-4"><h5 class="caste-header">Eclipse (Society)</h5><div id="eclipse-abilities"></div></div>
+    </div>
+    <hr>
+    <div class="row g-4">
+      <div class="col-md-4"><h3 class="text-center mb-3">Virtues</h3><div id="virtues-advantages"></div></div>
+      <div class="col-md-4"><h3 class="text-center mb-3">Core Traits</h3><div id="core-traits"></div>
+        <div class="mt-4"><label for="personal-motes" class="form-label">Personal Motes</label><input id="personal-motes" name="personal-motes" class="form-control form-control-sm mb-3" value="{{ (sheet_data.get('personal_motes','') if sheet_data else '') }}"><label for="peripheral-motes" class="form-label">Peripheral Motes</label><input id="peripheral-motes" name="peripheral-motes" class="form-control form-control-sm" value="{{ (sheet_data.get('peripheral_motes','') if sheet_data else '') }}"></div>
+      </div>
+      <div class="col-md-4"><h3 class="text-center mb-3">Backgrounds</h3><textarea id="backgrounds" name="backgrounds" class="form-control" rows="5" placeholder="Artifacts, Resources, Manse, Allies...">{{ sheet_data.get('backgrounds','') if sheet_data else '' }}</textarea></div>
+    </div>
+    <div class="d-flex flex-wrap gap-2 justify-content-end mt-4">
+      <a class="btn btn-outline-gold" href="{{ url_for('main.characters') }}">Cancel</a>
+      <button class="btn btn-gold" type="submit">{{ 'Save changes' if character else 'Save character' }}</button>
+    </div>
+  </form>
+</div>
+
+<template id="textinput-template"><div class="col-md-4 mb-3"><label class="form-label"><span class="input-label"></span> <span class="input-tooltip" data-bs-toggle="tooltip" style="display:none">ⓘ</span></label><input type="text" class="form-control"></div></template>
+<template id="selectinput-template"><div class="col-md-4 mb-3"><label class="form-label"><span class="input-label"></span> <span class="input-tooltip" data-bs-toggle="tooltip" style="display:none">ⓘ</span></label><select class="form-select"></select></div></template>
+<template id="valueinput-template"><div class="stat-row"><div class="col-4"><span class="stat-label" data-bs-toggle="tooltip"></span></div><div class="col-6"><input type="text" class="form-control specialty-input" placeholder="Specialty"></div><div class="col-2 stat-dots"><input type="number" class="stat-input form-control form-control-sm"></div></div></template>
+<script id="initial-sheet-data" type="application/json">{{ sheet_data|tojson }}</script>
+{% endblock %}
+{% block extra_scripts %}<script src="{{ url_for('static', filename='js/character.js') }}"></script>{% endblock %}

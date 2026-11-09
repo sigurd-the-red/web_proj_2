@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1500" viewBox="0 0 2000 1500">
+  <defs>
+    <radialGradient id="sea" cx="48%" cy="46%" r="78%"><stop offset="0" stop-color="#25323a"/><stop offset=".58" stop-color="#17252d"/><stop offset="1" stop-color="#0b131b"/></radialGradient>
+    <linearGradient id="land" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#887b58"/><stop offset=".42" stop-color="#5f684f"/><stop offset="1" stop-color="#333f37"/></linearGradient>
+    <linearGradient id="mountain" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b2a17b"/><stop offset="1" stop-color="#5a5948"/></linearGradient>
+    <pattern id="waves" width="120" height="80" patternUnits="userSpaceOnUse"><path d="M8 24q20-10 40 0t40 0" fill="none" stroke="#8f9b91" stroke-opacity=".13" stroke-width="2"/><path d="M40 58q20-10 40 0t40 0" fill="none" stroke="#8f9b91" stroke-opacity=".1" stroke-width="1.5"/></pattern>
+    <pattern id="grain" width="70" height="70" patternUnits="userSpaceOnUse"><circle cx="9" cy="14" r="1.5" fill="#e6d2a0" opacity=".12"/><circle cx="48" cy="42" r="1" fill="#111" opacity=".3"/><path d="M15 55l7-2" stroke="#e6d2a0" opacity=".08"/></pattern>
+    <filter id="glow"><feGaussianBlur stdDeviation="8" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="2000" height="1500" fill="url(#sea)"/>
+  <rect width="2000" height="1500" fill="url(#waves)"/>
+  <g fill="url(#land)" stroke="#c5a96b" stroke-width="8" stroke-linejoin="round">
+    <path d="M70 130l110-54 125 27 70-44 138 44 60 88-38 105 44 82-33 102 53 81-45 120-93 80-114-21-77 75-129-39-68-103 20-120-55-70 39-126-31-117z"/>
+    <path d="M602 50l133-32 112 52 92-18 105 79-25 97 73 83-28 112 51 90-50 105-125 30-55 93-133-19-68-105-96-24-42-122 37-104-42-100 42-111z"/>
+    <path d="M1020 540l90-83 133 24 91-51 145 37 102 116-20 104 47 98-70 122-108 54-56 130-122-5-87-89-119-26-58-118 37-114-55-103z"/>
+    <path d="M1490 95l112-39 128 48 73 113-41 87 77 89-48 110-123 23-71-58-115 26-90-73 23-110-35-105z"/>
+    <path d="M260 930l96-75 117 29 69 96-32 110 47 82-91 91-117-18-91-86-18-132z"/>
+    <path d="M760 1090l80-45 93 45 12 112-83 65-92-40-38-74z"/>
+    <path d="M1330 1150l103-33 73 65-13 103-106 38-79-65z"/>
+  </g>
+  <g fill="none" stroke="#dbc58f" stroke-opacity=".35" stroke-width="5">
+    <path d="M135 260q160-120 325 6t-12 250q-115 120-220 34t-93-290"/>
+    <path d="M720 120q160 130 95 300t115 225q160 15 180-125"/>
+    <path d="M1180 620q150-110 295 13t-20 220q-155 135-280 16t5-249"/>
+    <path d="M1550 150q-65 95 22 170t-45 150"/>
+  </g>
+  <g fill="none" stroke="url(#mountain)" stroke-width="13" stroke-linecap="round" opacity=".9">
+    <path d="M185 250l55-72 47 68 51-86 51 90 58-70 48 84"/>
+    <path d="M670 190l57-89 54 84 63-104 50 103 58-67 51 92"/>
+    <path d="M1110 760l63-93 49 90 63-109 59 113 62-73 46 78"/>
+    <path d="M1530 210l51-74 54 66 47-93 55 81"/>
+  </g>
+  <g fill="#d6c49a" font-family="Georgia,serif" font-size="36" font-style="italic" opacity=".78">
+    <text x="115" y="625" transform="rotate(-11 115 625)">The South</text>
+    <text x="675" y="430" transform="rotate(-8 675 430)">The Scavenger Lands</text>
+    <text x="1255" y="1020" transform="rotate(-10 1255 1020)">The East</text>
+    <text x="1545" y="430" transform="rotate(8 1545 430)">The North</text>
+    <text x="795" y="1375" font-size="27">THE WORLD OF CREATION</text>
+  </g>
+  <g transform="translate(1830 1220)" stroke="#d7bd7e" fill="none" stroke-width="5" opacity=".8">
+    <circle r="72"/><circle r="54"/><path d="M0-92V92M-92 0H92M0-62L20 0 0 62-20 0z"/>
+    <path d="M0-52L15 0 0 52-15 0z" fill="#c5a059"/>
+  </g>
+  <text x="1830" y="1105" text-anchor="middle" fill="#e4cc91" font-family="Cinzel,Georgia,serif" font-size="28" letter-spacing="4">N</text>
+  <rect width="2000" height="1500" fill="url(#grain)"/>
+  <rect x="18" y="18" width="1964" height="1464" rx="8" fill="none" stroke="#c5a059" stroke-width="7" opacity=".75"/>
+  <rect x="34" y="34" width="1932" height="1432" rx="5" fill="none" stroke="#e4cc91" stroke-width="2" opacity=".3"/>
+</svg>

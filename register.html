@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Create account{% endblock %}
+{% block content %}
+<div class="container py-5" style="max-width: 620px">
+  <div class="page-heading text-center"><div class="eyebrow">A new legend begins</div><h1>Create your account</h1></div>
+  <div class="panel">
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      {% for field in [form.username, form.email, form.password, form.confirm_password] %}
+        <div class="mb-3">{{ field.label(class="form-label") }}{{ field(class="form-control", autocomplete='new-password' if field.name in ['password','confirm_password'] else 'off') }}{% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}</div>
+      {% endfor %}
+      {{ form.submit(class="btn btn-gold w-100") }}
+    </form>
+    <p class="muted mt-3 mb-0 text-center">Already registered? <a href="{{ url_for('main.login') }}">Sign in</a>.</p>
+  </div>
+</div>
+{% endblock %}

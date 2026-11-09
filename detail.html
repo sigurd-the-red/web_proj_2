@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}{{ campaign.name }}{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="page-heading d-flex flex-wrap justify-content-between align-items-end gap-3">
+    <div><div class="eyebrow">{{ campaign.setting_location }} · {{ 'Storyteller view' if membership.is_storyteller else 'Player view' }}</div><h1 class="mb-1">{{ campaign.name }}</h1><p class="muted mb-0">{{ campaign.description or 'The chronicle awaits its first chapter.' }}</p></div>
+    {% if membership.is_storyteller %}<div class="d-flex gap-2"><a class="btn btn-outline-gold" href="{{ url_for('main.edit_campaign', campaign_id=campaign.id) }}">Edit campaign</a></div>{% endif %}
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-lg-4"><div class="content-card"><div class="eyebrow">Invitation code</div><div class="invite-code">{{ campaign.invite_code }}</div><p class="muted small mt-2 mb-0">Share this code with players so they can join your campaign.</p></div></div>
+    <div class="col-lg-4"><div class="content-card"><div class="eyebrow">Storyteller</div><h3>{{ campaign.owner.username }}</h3><p class="muted mb-0">Keeper of the world, its challenges, and its consequences.</p></div></div>
+    <div class="col-lg-4"><div class="content-card"><div class="eyebrow">Campaign state</div><h3>{{ campaign.status|title }}</h3><p class="muted mb-0">{{ campaign.memberships|length }} participant(s) · {{ campaign.sessions|length }} session(s)</p></div></div>
+  </div>
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="content-card mb-3"><h3>Party roster</h3>
+        {% for member in campaign.memberships %}<div class="stat-row py-2"><div><strong>{{ member.user.username }}</strong><div class="small muted">{{ 'Storyteller' if member.is_storyteller else 'Player' }}{% if member.character %} · {{ member.character.name }} ({{ member.character.caste }}){% endif %}</div></div>{% if member.is_storyteller %}<span class="badge badge-gold">GM</span>{% endif %}</div>{% endfor %}
+      </div>
+      <div class="content-card"><div class="d-flex flex-wrap align-items-center justify-content-between gap-2"><h3 class="mb-0">Session chronicle</h3>{% if membership.is_storyteller %}<span class="badge badge-gold">GM tools enabled</span>{% endif %}</div>
+        {% for item in campaign.sessions %}<div class="session-card mt-3"><div class="d-flex flex-wrap justify-content-between gap-2"><div><div class="eyebrow">{{ item.status|title }}{% if item.scheduled_at %} · {{ item.scheduled_at.strftime('%b %d, %Y · %H:%M') }}{% endif %}</div><h4>{{ item.title }}</h4></div><a href="{{ url_for('main.session_detail', session_id=item.id) }}" class="btn btn-outline-gold btn-sm align-self-start">Open session</a></div><p class="muted mb-0">{{ item.summary|truncate(180) if item.summary else 'No preparation or recap has been added.' }}</p></div>{% else %}<p class="muted mt-3">No sessions have been recorded.</p>{% endfor %}
+      </div>
+    </div>
+    <div class="col-lg-5">
+      {% if membership.is_storyteller %}
+        <div class="content-card mb-3"><h3>Schedule a session</h3><form method="post" action="{{ url_for('main.new_session', campaign_id=campaign.id) }}">{{ session_form.hidden_tag() }}<div class="mb-2">{{ session_form.title.label(class="form-label") }}{{ session_form.title(class="form-control") }}</div><div class="mb-2">{{ session_form.scheduled_at.label(class="form-label") }}{{ session_form.scheduled_at(class="form-control", type="datetime-local") }}</div><div class="mb-3">{{ session_form.summary.label(class="form-label") }}{{ session_form.summary(class="form-control", rows=3) }}</div>{{ session_form.submit(class="btn btn-gold w-100") }}</form></div>
+        <div class="content-card mb-3"><h3>Campaign NPCs</h3>{% for npc in campaign.npcs %}<div class="stat-row py-2"><div><strong>{{ npc.name }}</strong><div class="small muted">{{ npc.role }}</div><div class="small">{{ npc.description }}</div></div></div>{% else %}<p class="muted">No NPCs recorded yet.</p>{% endfor %}<hr><form method="post" action="{{ url_for('main.add_npc', campaign_id=campaign.id) }}">{{ npc_form.hidden_tag() }}<div class="mb-2">{{ npc_form.name(class="form-control", placeholder="NPC name") }}</div><div class="mb-2">{{ npc_form.role(class="form-control", placeholder="Role / faction") }}</div><div class="mb-2">{{ npc_form.description(class="form-control", rows=2, placeholder="Appearance, motives, secrets...") }}</div>{{ npc_form.submit(class="btn btn-outline-gold btn-sm") }}</form></div>
+      {% else %}
+        <div class="content-card mb-3"><div class="eyebrow">Player resources</div><h3>Your chronicle</h3><p class="muted">Use the session pages to add party notes and roll dice. Private Storyteller notes remain hidden from players.</p><a class="btn btn-outline-gold" href="{{ url_for('main.characters') }}">Manage your characters</a><hr><form method="post" action="{{ url_for('main.update_campaign_character', campaign_id=campaign.id) }}">{{ character_form.hidden_tag() }}<div class="mb-2">{{ character_form.character_id.label(class="form-label") }}{{ character_form.character_id(class="form-select") }}</div>{{ character_form.submit(class="btn btn-gold btn-sm") }}</form></div>
+      {% endif %}
+      <div class="content-card"><h3>Dice roller</h3><p class="muted small">Roll a pool of d10s. A 7–9 is one success; a 10 is two successes (one for damage).</p><form method="post" action="{{ url_for('main.campaign_roll', campaign_id=campaign.id) }}">{{ roll_form.hidden_tag() }}<div class="row g-2"><div class="col-6">{{ roll_form.pool.label(class="form-label") }}{{ roll_form.pool(class="form-control") }}</div><div class="col-6">{{ roll_form.difficulty.label(class="form-label") }}{{ roll_form.difficulty(class="form-control") }}</div><div class="col-12">{{ roll_form.roll_type.label(class="form-label") }}{{ roll_form.roll_type(class="form-select") }}</div><div class="col-12">{{ roll_form.submit(class="btn btn-gold w-100") }}</div></div></form>
+        {% if latest_rolls %}<hr><div class="eyebrow">Recent rolls</div>{% for roll in latest_rolls[:5] %}<div class="small py-1">{{ roll.user.username if roll.user else 'Unknown' }} · {{ roll.pool }}d10 → <strong>{{ roll.successes }} success(es)</strong>{% if roll.is_botch %} · <span class="text-danger">Botch</span>{% endif %}</div>{% endfor %}{% endif %}
+      </div>
+    </div>
+  </div>
+  {% if membership.is_storyteller %}<form class="mt-4" method="post" action="{{ url_for('main.delete_campaign', campaign_id=campaign.id) }}" onsubmit="return confirm('Delete this campaign and all its sessions?');"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-danger-soft btn-sm">Delete campaign</button></form>{% endif %}
+</div>
+{% endblock %}
